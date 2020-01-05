@@ -48,6 +48,7 @@ If your don't,I Recommend
 * Clone the repository into your machine
 * Edit the config file with your installations info
 * Add your channel playlists to concat_files directory (see example for formating)
+* Run cron.sh to launch all channels (gives pretty output)
 
 ### This Is Alpha Software so expect occational bugs
 
