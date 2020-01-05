@@ -52,6 +52,9 @@ If your don't,I Recommend
 
 ### This Is Alpha Software so expect occational bugs
 
+## For the Curious this is what it looks like when setup on TiviMate
+[![HLS / XMLTV Home broadcasting](https://img.youtube.com/vi/_mWtT-z2smU/0.jpg)](https://www.youtube.com/watch?v=_mWtT-z2smU)
+
 
 ### License
 
