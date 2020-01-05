@@ -1,0 +1,69 @@
+#!/usr/bin/python
+
+"""
+xmltv-join by Hadley Rich <hads@nice.net.nz>
+
+Licensed under the BSD License.
+
+Joins two or more XMLTV files. A lot faster and less dependancies than
+tv_cat but doesn't validate etc. during joining.
+
+Call like so;
+
+cat freeview.xml sky.xml | xmltv-join > joined-file.xml
+
+or;
+
+xmltv-join freeview.xml sky.xml > joined-file.xml
+
+"""
+
+import sys
+from xml.etree import cElementTree as ElementTree
+from optparse import OptionParser
+
+VERSION = '0.1.0'
+
+def indent(elem, level=0):
+    i = "\n" + level * "\t"
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "\t"
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+
+if __name__ == '__main__':
+    parser = OptionParser(version='%prog ' + str(VERSION))
+    (options, args) = parser.parse_args()
+
+    if sys.stdin.isatty():
+        data = ''
+        for arg in args:
+            data += open(arg).read()
+    else:
+        data = sys.stdin.read()
+
+    files = ['%s</tv>' % x.strip() for x in data.split('</tv>') if x.strip()]
+    trees = []
+    out = ElementTree.Element('tv')
+
+    for f in files:
+        trees.append(ElementTree.XML(f))
+
+    for tree in trees:
+        for channel in tree.findall('.//channel'):
+            out.append(channel)
+    for tree in trees:
+        for programme in tree.findall('.//programme'):
+            out.append(programme)
+
+    indent(out)
+    ElementTree.dump(out)
+
