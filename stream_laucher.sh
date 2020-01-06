@@ -43,6 +43,24 @@ CHANNEL_NAME="${1:1:-1}"
 STREAMID="${2:1:-1}"
 
 # --------------------------------------------------------------------------------------------------
+# Tell user how to call script directly if arguments missing
+# --------------------------------------------------------------------------------------------------
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]
+then
+	echo "Its looks like you have not set any arguments, for a example see below: (note: \$TVMAZE_SHOW_ID is optional)"
+	echo ""
+	${ECHO} $red "$ bash ./stream_laucher.sh \"'CHANNEL_ID'\" \"'HOME_DIR'\" "'FFMPEG_CONCAT_LIST'"  \"'TVMAZE_SHOW_ID'\""
+	echo ""
+	${ECHO} $blue "Notice that the arguments are encased in both apostrophes and quotation mark"$yellow""
+	echo ""
+	echo "If you want to launch all streams simply start the cron.sh and it will pull all the info from the config.cfg file"
+	echo "that is the expected use case, but you can launch individual streams with this script using the command above."
+	echo ""
+	exit
+fi
+
+
+# --------------------------------------------------------------------------------------------------
 # lock file to stop multiple scripts running at once
 # --------------------------------------------------------------------------------------------------
 LOCK_FILE="$TMP_DIR"/"ffmpeg.lock"
