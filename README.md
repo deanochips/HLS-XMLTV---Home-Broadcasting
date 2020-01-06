@@ -21,17 +21,19 @@ a TMPFS in the NGINX web directory is required to run this effectively
 
 to quickly setup a ram disk:
 
-   $ mount -t tmpfs -o size=512m tmpfs /var/www/html/streams
+    $ mount -t tmpfs -o size=512m tmpfs /var/www/html/streams
 
 to make it automatic when linux boots edit the /etc/fstab with something like this:
 
-   $ tmpfs       /var/www/html/streams tmpfs   nodev,nosuid,noexec,nodiratime,size=512M   0 0
+    $ tmpfs       /var/www/html/streams tmpfs   nodev,nosuid,noexec,nodiratime,size=512M   0 0
 
 ## Important 2:
 
 Video files on the same channel all have to be the same format,
 
-If your don't,I Recommend
+If your don't,
+
+**I Recommend**
 [FFmpeg Batch AV Converter](https://sourceforge.net/projects/ffmpeg-batch/)
 
 ### Requirements
