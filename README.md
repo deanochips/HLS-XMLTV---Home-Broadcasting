@@ -31,7 +31,7 @@ to make it automatic when linux boots edit the /etc/fstab with something like th
 
 Video files on the same channel all have to be the same format,
 
-If your don't,
+If yours don't,
 
 **I Recommend**
 [FFmpeg Batch AV Converter](https://sourceforge.net/projects/ffmpeg-batch/)
