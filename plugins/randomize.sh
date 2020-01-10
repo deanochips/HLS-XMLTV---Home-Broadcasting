@@ -45,23 +45,12 @@ then
 
 else
 
-	if [ ! -f $CACHE_DIR/$CONCAT_RENAME"_random_cache.txt" ];
-	then
-		# echo "not found"
-		touch $TMP_TVLISTS_DIR/$CONCAT_RENAME.txt
-		chmod 777 $TMP_TVLISTS_DIR/$CONCAT_RENAME.txt
-
-		shuf "$CONCAT_FILE"  -o "$TMP_TVLISTS_DIR""/""$CONCAT_RENAME"_random.txt
-
-	else
-		# echo "found"
-
 # Detect First Run after system restart and copy concat file to tmpfs
 if [ ! -f $TMP_TVLISTS_DIR/$CONCAT_RENAME"_random.txt" ];
 then
 	cp $CONCAT_LIST_DIR/$CONCAT_RENAME"_random.txt" $TMP_TVLISTS_DIR/$CONCAT_RENAME"_random.txt"
 	chmod 777 $TMP_TVLISTS_DIR"/""$CONCAT_RENAME"_random.txt
-	fi
+fi
 
 #Merge Concat and Cache
 paste -d "~" "$TMP_TVLISTS_DIR""/""$CONCAT_RENAME"_random.txt "$CACHE_DIR""/""$CONCAT_RENAME"_random_cache.txt | shuf > "$TMP_TVLISTS_DIR""/""$CONCAT_RENAME"_concat_cache_merged.txt
@@ -89,6 +78,4 @@ fi
 
 rm $TMP_TVLISTS_DIR/$CONCAT_RENAME"_concat_cache_merged.txt" > /dev/null 2>&1
 rm $TMP_TVLISTS_DIR/$CONCAT_RENAME".txt" > /dev/null 2>&1
-
-fi
 
