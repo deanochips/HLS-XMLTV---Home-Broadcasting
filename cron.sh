@@ -47,7 +47,12 @@ LOCK_FILE="/${TMP_DIR}/${SCRIPT_BIN}.pid"
 (
     # Check for the lock on $LOCK_FILE (fd 200) or exit
     flock -xn 200 || {
+    if [ "$1" = "CRON_USER" ];
+    then 
         logger -t crond.stop "$SCRIPT_NAME Script had FLock. Check running was $CHECK_RUNNING. Aborted this instance."
+	else
+	echo "$SCRIPT_NAME is already locked."
+	fi
         exit 1
     }
     #No lock, OK, let's go on
@@ -108,13 +113,9 @@ then
 
 	if [ "$M3U_DIR"/"streams.m3u" -ot "./config.cfg" ] # check if config it newer than m3u 
 	then
-		generate_m3u
-		fi
-		
-		
-		
-		
-		
+	generate_m3u
+	fi
+	
 		
     exit 0
 ) 200>"$LOCK_FILE"
