@@ -33,7 +33,7 @@ cd ..
 
 source ./config.cfg
 
-CONCAT_NAME_TRIMMED=$1
+CONCAT_NAME_TRIMMED=${1:0:-13}
 
 # start IDENT functions write two files for series and idents that can be used for quick launching channels with random idents
 
