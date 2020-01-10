@@ -31,7 +31,7 @@
 cd $(dirname ${BASH_SOURCE[0]})
 cd ..
 
-#source ./config.cfg
+source ./config.cfg
 
 CONCAT_NAME_TRIMMED=$1
 
