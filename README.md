@@ -63,3 +63,15 @@ If yours don't,
 
 * [GNU GPL v3](http://www.gnu.org/licenses/gpl.html)
 * Copyright 2010-2020
+
+# Docker Versions
+Confusingly they both have the same name but they have different approches:
+
+### [HLS-XMLTV-Docker](https://github.com/deanochips/HLS-XMLTV-Docker)
+My personal docker version, matches development machine and pulls master branch, image is about 125mb
+
+### [HLS-XMLTV-Docker](https://github.com/chasx003/HLS-XMLTV-Docker)
+Created by chasx003, it has a fixed version and had its variables rewritten to docker variables, image is about 157mb
+
+
+
