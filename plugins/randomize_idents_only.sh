@@ -62,7 +62,7 @@ cp $TMP_TVLISTS_DIR"/""$CONCAT_RENAME"_runningorder.txt  $CONCAT_LIST_DIR"/""$CO
 else
 
 
-	cp $TMP_TVLISTS_DIR"/""$CONCAT_RENAME"_idents.txt  $CONCAT_LIST_DIR"/""$CONCAT_RENAME"_idents.txt
+	cp $CONCAT_LIST_DIR"/""$CONCAT_RENAME"_idents.txt  $TMP_TVLISTS_DIR"/""$CONCAT_RENAME"_idents.txt
 
 
 
