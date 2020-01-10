@@ -26,6 +26,10 @@
 # --------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------
 
+if [ "$1" = "CRON_USER" ];
+then 
+SPLASH_RUN_YET="yes"
+fi
 
 # --------------------------------------------------------------------------------------------------
 # Call Config File
@@ -33,6 +37,25 @@
 
 cd $(dirname ${BASH_SOURCE[0]})
 source ./config.cfg
+
+# --------------------------------------------------------------------------------------------------
+# FLOCK stopping multiple calls
+# --------------------------------------------------------------------------------------------------
+SCRIPT_NAME="cron"
+SCRIPT_BIN="$(basename $0)"
+LOCK_FILE="/${TMP_DIR}/${SCRIPT_BIN}.pid"
+(
+    # Check for the lock on $LOCK_FILE (fd 200) or exit
+    flock -xn 200 || {
+        logger -t crond.stop "$SCRIPT_NAME Script had FLock. Check running was $CHECK_RUNNING. Aborted this instance."
+        exit 1
+    }
+    #No lock, OK, let's go on
+    echo $$ 1>&200
+    trap cleanup INT TERM EXIT QUIT KILL STOP # call cleanup() if script exits
+    cleanup() {
+          flock -u 200
+    }
 
 # --------------------------------------------------------------------------------------------------
 # functions
@@ -87,3 +110,11 @@ then
 	then
 		generate_m3u
 		fi
+		
+		
+		
+		
+		
+		
+    exit 0
+) 200>"$LOCK_FILE"
