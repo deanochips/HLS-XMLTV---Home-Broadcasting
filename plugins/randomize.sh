@@ -42,6 +42,9 @@ then
 	chmod 777 $TMP_TVLISTS_DIR/$CONCAT_RENAME.txt
 
 	shuf "$CONCAT_FILE"  -o "$TMP_TVLISTS_DIR""/""$CONCAT_RENAME"_random.txt
+	
+	rm $CONCAT_LIST_DIR/$CONCAT_RENAME"_random.txt"
+	cp $TMP_TVLISTS_DIR/$CONCAT_RENAME"_random.txt" $CONCAT_LIST_DIR/$CONCAT_RENAME"_random.txt"
 
 else
 
@@ -78,6 +81,7 @@ touch -r $CONCAT_FILE $CACHE_DIR/$CONCAT_RENAME"_random_cache.txt" # matching co
 
 # Cleanup
 
+rm "$TMP_TVLISTS_DIR""/""$CONCAT_RENAME"_random_cache.txt
 rm $TMP_TVLISTS_DIR/$CONCAT_RENAME"_concat_cache_merged.txt" > /dev/null 2>&1
 rm $TMP_TVLISTS_DIR/$CONCAT_RENAME".txt" > /dev/null 2>&1
 
