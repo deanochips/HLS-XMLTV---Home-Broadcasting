@@ -67,6 +67,8 @@ cat $TMP_TVLISTS_DIR/$CONCAT_RENAME"_concat_cache_merged.txt" | awk -v FS='~' '{
 
 
 cp "$TMP_TVLISTS_DIR""/""$CONCAT_RENAME"_random.txt "$CONCAT_LIST_DIR""/""$CONCAT_RENAME"_random.txt
+cp "$TMP_TVLISTS_DIR""/""$CONCAT_RENAME"_random_cache.txt "$CACHE_DIR""/""$CONCAT_RENAME"_random_cache.txt
+
 
 chmod 777 $TMP_TVLISTS_DIR"/""$CONCAT_RENAME"_random.txt
 chmod 777 $TMP_TVLISTS_DIR"/""$CONCAT_RENAME"_concat_cache_merged.txt
