@@ -262,10 +262,15 @@ else
 	rm "$TMP_DIR"/"$CHANNEL_ID"".json"
 done
 
+
+if [ "${FFMPEG_CONCAT_LIST:(-11)}" = "_idents.txt" ]; then
+
 	 # only required for spliting cache for channels with idents for everthing else it does nothing and can be removed if not used
 	 source ./plugins/split_finished_cache_file.sh "$CONCAT_NAME_TRIMMED" 2>> "$CACHE_SPLITTER_LOG_DIR"/split_"$CHANNEL_NAME"_error.log
 
- }
+fi
+
+}
 
 
 # --------------------------------------------------------------------------------------------------
