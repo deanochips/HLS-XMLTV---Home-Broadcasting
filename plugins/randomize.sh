@@ -72,10 +72,11 @@ chmod 777 $TMP_TVLISTS_DIR"/""$CONCAT_RENAME"_random.txt
 chmod 777 $TMP_TVLISTS_DIR"/""$CONCAT_RENAME"_concat_cache_merged.txt
 
 touch -r $CONCAT_FILE $CACHE_DIR/$CONCAT_RENAME"_random_cache.txt" # matching concat & cache file dates so we can detect changes in future
-fi
+
 
 # Cleanup
 
 rm $TMP_TVLISTS_DIR/$CONCAT_RENAME"_concat_cache_merged.txt" > /dev/null 2>&1
 rm $TMP_TVLISTS_DIR/$CONCAT_RENAME".txt" > /dev/null 2>&1
 
+fi
