@@ -94,8 +94,13 @@ function generate_m3u {
 }
 
 
+# generate_m3u right away if missing cron user (useful for apps that require m3u at boot, eg TVheadend)
+if [ "$1" = "CRON_USER" ] && [ ! -f "$M3U_DIR"/"streams.m3u"  ];
+then 
+		generate_m3u
+fi
 
-
+# Launch Streams
 for args in "${arg_array[@]}"
 do
 	source ./stream_laucher.sh $args
