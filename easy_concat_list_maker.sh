@@ -59,7 +59,7 @@ action() {
 		then
 
 
-			SHOWNAME=$(basename "${args}")
+                        SHOWNAME=$(basename "${args}"  | sed -r "s| |_|g")
 
 			find "$args" -name '*.mkv' -o -name '*.mp4' -o -name '*.avi' -o -name '*.m4v' -o -name '*.mov'|while read fname; do
 			FULLPATH=$(realpath "$fname")
