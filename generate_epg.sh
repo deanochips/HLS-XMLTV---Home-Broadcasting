@@ -394,3 +394,10 @@ cat $XMLTV_DIR/!(xmltv.xml) | $PYTHON "$PLUGIN_DIR"/xmltv-join > $XMLTV_DIR/xmlt
 
 shopt -u extglob # disable extended globing
 echo "XMLTV File: "$XMLTV_FILENAME
+
+# IF TVheadend Link detected push EPG data to it
+if [[ -e "/epggrab/xmltv.sock" ]]; then
+cat $XMLTV_DIR/xmltv.xml | socat - UNIX-CONNECT:/epggrab/xmltv.sock
+fi
+
+
