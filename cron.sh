@@ -73,7 +73,7 @@ function generate_m3u {
 	for args in "${arg_array[@]}"
 	do
 		vars=( $args )
-		echo "#EXTINF:-1 tvg-ID="${vars[0]:1:-1}.tv" tvg-name="${vars[0]:1:-1}" tvg-logo="" group-title="","${vars[0]:1:-1}""  >> "$M3U_DIR"/"streams.m3u"
+		echo '#EXTINF:-1 tvg-ID="'${vars[0]:1:-1}.tv'" tvg-name="'${vars[0]:1:-1}'" tvg-logo="" group-title="" ,"'${vars[0]:1:-1}'"'  >> "$M3U_DIR"/"streams.m3u"
 		echo "$STREAM_HTTP_DIR"/"${vars[1]:1:-1}"".m3u8" >> "$M3U_DIR"/"streams.m3u"
 	done
 
