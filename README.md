@@ -36,6 +36,11 @@ If yours don't,
 **I Recommend**
 [FFmpeg Batch AV Converter](https://sourceforge.net/projects/ffmpeg-batch/)
 
+here is the parameters i use to match 4:3 & 16:9 content in one go
+
+    -c:v libx264 -crf 23 -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2" -c:a aac -b:a 128K -ar 48K -ac 2
+
+
 ### Requirements
 
 * BASH
