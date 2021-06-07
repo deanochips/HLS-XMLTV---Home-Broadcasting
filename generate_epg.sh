@@ -60,14 +60,14 @@ CACHE_FILE_FULLPATH="$CACHE_DIR"/"${LISTNAME%.*}"_cache.txt
 case ${FFMPEG_CONCAT_LIST:(-11)} #Get last 11 characters from string
 	in
 	"_random.txt")
-CONCAT_NAME_TRIMMED=${LISTNAME:0:-17}
-	;;
-"_idents.txt")
-CONCAT_NAME_TRIMMED=${LISTNAME:0:-17}
-	;;
-*)
-CONCAT_NAME_TRIMMED=${LISTNAME%.*}
-	;;
+		CONCAT_NAME_TRIMMED=${LISTNAME:0:-17}
+		;;
+	"_idents.txt")
+		CONCAT_NAME_TRIMMED=${LISTNAME:0:-17}
+		;;
+	*)
+		CONCAT_NAME_TRIMMED=${LISTNAME%.*}
+		;;
 esac
 
 # --------------------------------------------------------------------------------------------------
@@ -163,22 +163,27 @@ function generateepg {
 	LINEIMAGE=$(echo "$CACHE_LINE" | cut -d ':' -f 7)
 
 
-	if [ -z "$LINESUMMERY" ]
-	then
+	if [ -z "$LINENAME" ]; then
 		PROGRAMNAME="${FILENAME%.*}"
-		PROGRAMDESCRIPTION="${FILENAME%.*}"
-		PROGRAMSUBNAME="${FILENAME%.*}"
 	else
-		PROGRAMNAME="$LINENAME"
-		PROGRAMDESCRIPTION=$LINESUMMERY
-		PROGRAMSUBNAME="${FILENAME%.*}"
+		if [ -z "$SEASON" ]; then
+			PROGRAMNAME="$LINENAME"
+		else
+			PROGRAMNAME="S""$SEASON""E""$EPISODE"": ""$LINENAME"
 		fi
+	fi
+	if [ -z "$LINESUMMERY" ]; then
+		PROGRAMDESCRIPTION="${FILENAME%.*}"
+	else
+		PROGRAMDESCRIPTION="$LINESUMMERY"
+	fi
+	PROGRAMSUBNAME="${FILENAME%.*}"
 
-		PROGRAMLANG="$CHANNELLANG"
-		PROGRAMSTART="$(date -d "$CURRENTTIME" +'%Y%m%d%H%M%S')"
-		CURRENTTIME=$(date -d "$CURRENTTIME $HOURS hours $MINUTES minutes $SECONDS seconds" +'%Y-%m-%d %H:%M:%S')
-		PROGRAMEND="$(date -d "$CURRENTTIME" +'%Y%m%d%H%M%S')"
-		program
+	PROGRAMLANG="$CHANNELLANG"
+	PROGRAMSTART="$(date -d "$CURRENTTIME" +'%Y%m%d%H%M%S')"
+	CURRENTTIME=$(date -d "$CURRENTTIME $HOURS hours $MINUTES minutes $SECONDS seconds" +'%Y-%m-%d %H:%M:%S')
+	PROGRAMEND="$(date -d "$CURRENTTIME" +'%Y%m%d%H%M%S')"
+	program
 	done
 	footer
 }
@@ -250,7 +255,7 @@ function extract_metadata {
       # remove html code from summary
       SUMMARY=$(echo $JSON_SUMMARY | sed -r 's;</p>;\n;g' |sed -r 's;<p>;;g'| sed -r "s|:| - |g")
 
-      METADATA=$(echo ":"$JSON_NAME":"$SUMMARY":"$JSON_AIRDATE":"$JSON_IMAGE | sed -r "s|http://||g" | sed -r "s|'|\x27|g" | sed -r "s| |_|g" | sed -r "s|/|\/|g")
+      METADATA=$(echo ":"$JSON_NAME":"$SUMMARY":"$JSON_AIRDATE":"$JSON_IMAGE | sed -r "s|http://||g" | sed -r "s|'|\x27|g" | sed -r "s| |_|g" | sed -r "s|;|,|g" | sed -r "s|/|\/|g")
 
       sed -i ''$M's;$;'$METADATA';' "$CACHE_FILE_FULLPATH"
       echo "Parsing: $JSON_NAME"
@@ -283,6 +288,7 @@ function build_cache {
 	cp $CACHE_FILE_FULLPATH "$TMP_TVLISTS_DIR"/"${LISTNAME%.*}"_cache.txt
 	TMP_CACHE_FILE_FULLPATH="$TMP_TVLISTS_DIR"/"${LISTNAME%.*}"_cache.txt
 
+	OIFS=$IFS
 	IFS=$'\n'
 	I=0  # start loop counter
 	while read P <&3; do
@@ -290,25 +296,25 @@ function build_cache {
 
 		if [[ $P = \#* ]] ; then
 			# Ignoring lines with a hash # to mirror the behaviour of ffmpeg
-					echo "# Detected Skipping..."
-				else
-					FILE=$(echo "${P:6:-1}" | sed "s/'''/'/g" | sed -r "s|'(.{1})'|\1|g")
-					FILENAME=$(basename "$FILE" )
+			echo "# Detected Skipping..."
+		else
+			FILE=$(echo "${P:6:-1}" | sed "s/'''/'/g" | sed -r "s|'(.{1})'|\1|g")
+			FILENAME=$(basename "$FILE" )
 
-					if [ -f "$FILE" ]; then
-						FILENAME_WO_EXT=${FILENAME%.*}
-						VIDEO_DURATION=$(ffprobe -i "$FILE" -show_entries format=duration -v quiet -of csv="p=0" -sexagesimal)
-						VIDEO_DURATION=$(echo "$VIDEO_DURATION" | cut -d '.' -f 1)
+			if [ -f "$FILE" ]; then
+				FILENAME_WO_EXT=${FILENAME%.*}
+				VIDEO_DURATION=$(ffprobe -i "$FILE" -show_entries format=duration -v quiet -of csv="p=0" -sexagesimal)
+				VIDEO_DURATION=$(echo "$VIDEO_DURATION" | cut -d '.' -f 1)
 
-						echo "$VIDEO_DURATION"":""$FILENAME_WO_EXT" >> "$TMP_CACHE_FILE_FULLPATH" # write to cache file
+				echo "$VIDEO_DURATION"":""$FILENAME_WO_EXT" >> "$TMP_CACHE_FILE_FULLPATH" # write to cache file
 
-						echo "Probing file number "$I" - "$FILENAME" for duration - ( "$VIDEO_DURATION" )"
-						sleep "$FFPROBE_SLEEPTIME"s
-					else
-						echo "File " $FILENAME " Missing, commenting out"
-						sed -i ''$I's/^/#/' $FFMPEG_CONCAT_LIST
-					fi
-					fi
+				echo "Probing file number "$I" - "$FILENAME" for duration - ( "$VIDEO_DURATION" )"
+				sleep "$FFPROBE_SLEEPTIME"s
+			else
+				echo "File " $FILENAME " Missing, commenting out"
+				sed -i ''$I's/^/#/' $FFMPEG_CONCAT_LIST
+			fi
+		fi
 
 
 				done 3< $FFMPEG_CONCAT_LIST
@@ -318,6 +324,7 @@ function build_cache {
 				touch -r $FFMPEG_CONCAT_LIST $CACHE_FILE_FULLPATH # matching concat & cache file dates so we can detect changes in future
 
 			}
+	IFS=$OIFS
 
 # TODO: create function to remove metadata from cache file and so it can be passed back to the function "extract_metadata" to get fresh data 
 
@@ -326,7 +333,7 @@ function build_cache {
 # --------------------------------------------------------------------------------------------------
 while true
 do
-	read -r -p "Do you wish delete the cached files for "$1"? [Y/n] " input
+	read -r -p "Do you wish to delete the cached files for "$1"? [Y/n] " input
 	case $input in
 		[yY][eE][sS]|[yY])
 			echo -e "Delete Cache: Yes" &
@@ -361,19 +368,19 @@ else
 	echo "JSON File: Exists"
 fi
 
-					if [ ! -f "$CACHE_FILE_FULLPATH" ] || [ "$CACHE_FILE_FULLPATH" -ot "$FFMPEG_CONCAT_LIST" ] # Rebuild cache if missing or concat file updated
-					then
-						rm "$CACHE_FILE_FULLPATH"  2>/dev/null
-						echo "Cache File: Does Not Exist"
-						build_cache
-						echo "Metadata: Does Not Exist"
-						extract_metadata
-					else
-						echo "Cache File: Exists"
-						echo "Metadata: File Exists"
-					fi
+if [ ! -f "$CACHE_FILE_FULLPATH" ] || [ "$CACHE_FILE_FULLPATH" -ot "$FFMPEG_CONCAT_LIST" ] # Rebuild cache if missing or concat file updated
+then
+	rm "$CACHE_FILE_FULLPATH"  2>/dev/null
+	echo "Cache File: Does Not Exist"
+	build_cache
+	echo "Metadata: Does Not Exist"
+	extract_metadata
+else
+	echo "Cache File: Exists"
+	echo "Metadata: File Exists"
+fi
 
-					generateepg
+generateepg
 
 # --------------------------------------------------------------------------------------------------
 # Merge all XMLTV files
@@ -397,7 +404,5 @@ echo "XMLTV File: "$XMLTV_FILENAME
 
 # IF TVheadend Link detected push EPG data to it
 if [[ -e "/epggrab/xmltv.sock" ]]; then
-cat $XMLTV_DIR/xmltv.xml | socat - UNIX-CONNECT:/epggrab/xmltv.sock
+	cat $XMLTV_DIR/xmltv.xml | socat - UNIX-CONNECT:/epggrab/xmltv.sock
 fi
-
-
