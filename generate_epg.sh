@@ -60,14 +60,14 @@ CACHE_FILE_FULLPATH="$CACHE_DIR"/"${LISTNAME%.*}"_cache.txt
 case ${FFMPEG_CONCAT_LIST:(-11)} #Get last 11 characters from string
 	in
 	"_random.txt")
-CONCAT_NAME_TRIMMED=${LISTNAME:0:-17}
-	;;
-"_idents.txt")
-CONCAT_NAME_TRIMMED=${LISTNAME:0:-17}
-	;;
-*)
-CONCAT_NAME_TRIMMED=${LISTNAME%.*}
-	;;
+		CONCAT_NAME_TRIMMED=${LISTNAME:0:-17}
+		;;
+	"_idents.txt")
+		CONCAT_NAME_TRIMMED=${LISTNAME:0:-17}
+		;;
+	*)
+		CONCAT_NAME_TRIMMED=${LISTNAME%.*}
+		;;
 esac
 
 # --------------------------------------------------------------------------------------------------
@@ -163,22 +163,27 @@ function generateepg {
 	LINEIMAGE=$(echo "$CACHE_LINE" | cut -d ':' -f 7)
 
 
-	if [ -z "$LINESUMMERY" ]
-	then
+	if [ -z "$LINENAME" ]; then
 		PROGRAMNAME="${FILENAME%.*}"
-		PROGRAMDESCRIPTION="${FILENAME%.*}"
-		PROGRAMSUBNAME="${FILENAME%.*}"
 	else
-		PROGRAMNAME="$LINENAME"
-		PROGRAMDESCRIPTION=$LINESUMMERY
-		PROGRAMSUBNAME="${FILENAME%.*}"
+		if [ -z "$SEASON" ]; then
+			PROGRAMNAME="$LINENAME"
+		else
+			PROGRAMNAME="S""$SEASON""E""$EPISODE"": ""$LINENAME"
 		fi
+	fi
+	if [ -z "$LINESUMMERY" ]; then
+		PROGRAMDESCRIPTION="${FILENAME%.*}"
+	else
+		PROGRAMDESCRIPTION="$LINESUMMERY"
+	fi
+	PROGRAMSUBNAME="${FILENAME%.*}"
 
-		PROGRAMLANG="$CHANNELLANG"
-		PROGRAMSTART="$(date -d "$CURRENTTIME" +'%Y%m%d%H%M%S')"
-		CURRENTTIME=$(date -d "$CURRENTTIME $HOURS hours $MINUTES minutes $SECONDS seconds" +'%Y-%m-%d %H:%M:%S')
-		PROGRAMEND="$(date -d "$CURRENTTIME" +'%Y%m%d%H%M%S')"
-		program
+	PROGRAMLANG="$CHANNELLANG"
+	PROGRAMSTART="$(date -d "$CURRENTTIME" +'%Y%m%d%H%M%S')"
+	CURRENTTIME=$(date -d "$CURRENTTIME $HOURS hours $MINUTES minutes $SECONDS seconds" +'%Y-%m-%d %H:%M:%S')
+	PROGRAMEND="$(date -d "$CURRENTTIME" +'%Y%m%d%H%M%S')"
+	program
 	done
 	footer
 }
