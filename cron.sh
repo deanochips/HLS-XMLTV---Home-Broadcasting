@@ -103,7 +103,7 @@ fi
 # Launch Streams
 for args in "${arg_array[@]}"
 do
-	source ./stream_laucher.sh $args
+	source ./stream_launcher.sh $args
 	#source ./gentest.sh $args
 
 done
